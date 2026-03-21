@@ -554,7 +554,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
   </div>
 </div>
 <div id="taskbar">
-  <button id="start-btn">▶ GHOST</button>
+  <button id="start-btn" onclick="togglePause()">⏸ GHOST</button>
   <div id="tb-wins"></div>
   <div id="tb-right">
     <div id="evid-w" onclick="openWin('dossier')">📂 <span id="evid-cnt">0</span>/23</div>
@@ -644,6 +644,18 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
     </div>
   </div>
 </div>
+<!-- PAUSE OVERLAY -->
+<div id="pause-overlay" style="display:none;position:fixed;inset:0;z-index:99990;background:rgba(0,0,0,.92);align-items:center;justify-content:center;flex-direction:column;font-family:var(--font);">
+  <div style="text-align:center;">
+    <div style="font-size:48px;margin-bottom:12px;filter:drop-shadow(0 0 20px var(--g))">⏸</div>
+    <div style="font-size:22px;font-weight:700;color:var(--g);letter-spacing:6px;margin-bottom:6px">PAUSE</div>
+    <div style="font-size:11px;color:var(--td);letter-spacing:2px;margin-bottom:28px">SYSTÈME EN ATTENTE — TOUS LES CHRONOMÈTRES SONT ARRÊTÉS</div>
+    <button onclick="resumeGame()" style="padding:14px 32px;background:rgba(0,255,65,.08);border:1px solid var(--gd);color:var(--g);font-family:var(--font);font-size:13px;cursor:pointer;border-radius:2px;letter-spacing:4px;transition:all .2s;">
+      ▶ &nbsp; REPRENDRE
+    </button>
+    <div style="font-size:10px;color:#333;margin-top:16px">Appuyez sur ESPACE pour reprendre</div>
+  </div>
+</div>
 <div id="wins-c"></div>
 
 <script>
@@ -666,7 +678,10 @@ const G = {
   secondaryObj: null, // {id, name, desc, evIds:[], reward, done}
   _lastClientName: '',
   _corpKilledExpiry: null,
-  _renderNetMult: 1.0,  // network tracking mult during page render only
+  _renderNetMult: 1.0,
+  paused: false,
+  pausedMs: 0,       // total accumulated pause time
+  _pauseStartMs: 0,  // timestamp when pause began
   _fakePin: null,          // fake PIN from CORP mail
   _lagActive: false,       // lag virus active
   _corruptedDossier: false, // corrupt dossier virus active
@@ -2485,6 +2500,7 @@ setInterval(() => { if (G.running && G.software.ghostCloak) updateCloakWidget();
 
 function addT(n){
   if(G.gameOver) return;
+  if(G.paused) return;
   if(G.cloakActive) return;
   // netMult from _renderNetMult (set during page render) or _curNetMult for collect
   const netMult = G._renderNetMult || 1.0;
@@ -2597,49 +2613,49 @@ const MISSION_TEMPLATES = [
     type:'corp_hack',
     genTitle: ()=> `Hacker le serveur de ${rComp()}`,
     genDesc: (c)=> `${c.prefix} ${c.name} a besoin d'accéder aux serveurs internes de ${rComp()}. Il faut contourner leur système de sécurité et extraire les journaux d'accès des 30 derniers jours. Aucune trace ne doit être laissée.`,
-    reward:()=> 70 + Math.floor(Math.random()*50),
+    reward:()=> 95 + Math.floor(Math.random()*65),
     puzzle:'sequence',
   },
   {
     type:'spy_spouse',
     genTitle: ()=> `Surveiller les communications d'un conjoint`,
     genDesc: (c)=> `${c.prefix} ${c.name} soupçonne son ${c.gender==='H'?'épouse':'époux'} de le tromper. Il faut intercepter ses messages privés sur les 7 derniers jours et compiler un rapport discret. Aucun contact direct.`,
-    reward:()=> 45 + Math.floor(Math.random()*35),
+    reward:()=> 62 + Math.floor(Math.random()*45),
     puzzle:'decode',
   },
   {
     type:'bank_trace',
     genTitle: ()=> `Tracer des virements bancaires suspects`,
     genDesc: (c)=> `${c.prefix} ${c.name} a détecté des mouvements inhabituels sur son compte. Il faut remonter la chaîne de virements jusqu'à l'origine, traverser ${2+Math.floor(Math.random()*3)} comptes intermédiaires. Résultats sous 24h.`,
-    reward:()=> 90 + Math.floor(Math.random()*60),
+    reward:()=> 122 + Math.floor(Math.random()*78),
     puzzle:'route',
   },
   {
     type:'recover_data',
     genTitle: ()=> `Récupérer des fichiers effacés`,
     genDesc: (c)=> `${c.prefix} ${c.name} a perdu des fichiers critiques suite à une suppression malveillante. Il faut accéder au serveur distant, bypasser le système de fichiers et restaurer les données avant qu'elles soient écrasées définitivement.`,
-    reward:()=> 60 + Math.floor(Math.random()*40),
+    reward:()=> 82 + Math.floor(Math.random()*52),
     puzzle:'sequence',
   },
   {
     type:'doxx',
     genTitle: ()=> `Identifier l'auteur d'un message anonyme`,
     genDesc: (c)=> `${c.prefix} ${c.name} reçoit des messages de menace depuis un compte anonyme. Il faut retrouver l'identité réelle derrière ce profil en traversant plusieurs couches de proxies. Discrétion absolue requise.`,
-    reward:()=> 55 + Math.floor(Math.random()*40),
+    reward:()=> 75 + Math.floor(Math.random()*52),
     puzzle:'route',
   },
   {
     type:'leak_docs',
     genTitle: ()=> `Extraire des documents confidentiels`,
     genDesc: (c)=> `${c.prefix} ${c.name} a besoin de preuves dans un dossier juridique. Des documents sont enfermés dans un serveur protégé. Extraction silencieuse, aucune alarme déclenchée, résultats cryptés.`,
-    reward:()=> 75 + Math.floor(Math.random()*55),
+    reward:()=> 102 + Math.floor(Math.random()*72),
     puzzle:'decode',
   },
   {
     type:'social_eng',
     genTitle: ()=> `Accéder au compte d'un dirigeant`,
     genDesc: (c)=> `${c.prefix} ${c.name} a besoin d'accéder au compte d'un dirigeant d'entreprise pour valider une théorie. Bypass de l'authentification à deux facteurs requis. Fenêtre d'action : limitée.`,
-    reward:()=> 95 + Math.floor(Math.random()*55),
+    reward:()=> 130 + Math.floor(Math.random()*72),
     puzzle:'sequence',
   },
 ];
@@ -3987,6 +4003,59 @@ function checkNarrativeTwist() {
 // Reveal login credentials hint when a proof with creds is collected
 // finalizeCollect cred reveal is inlined
 
+
+// ================================================================
+// PAUSE SYSTEM
+// ================================================================
+function pauseGame() {
+  if (!G.running || G.gameOver || G.paused) return;
+  G.paused = true;
+  G._pauseStartMs = Date.now();
+  AUD.glitch();
+  const overlay = document.getElementById('pause-overlay');
+  if (overlay) overlay.style.display = 'flex';
+  // Update ghost button
+  const btn = document.getElementById('start-btn');
+  if (btn) btn.innerHTML = '▶ REPRENDRE';
+}
+
+function resumeGame() {
+  if (!G.paused) return;
+  const pauseDuration = Date.now() - G._pauseStartMs;
+  G.pausedMs += pauseDuration;
+  G.paused = false;
+  G._pauseStartMs = 0;
+  // Shift all active deadlines forward by pause duration
+  if (G.licExpiry)            G.licExpiry            += pauseDuration;
+  if (G.cloakExpiry)          G.cloakExpiry          += pauseDuration;
+  if (G.cloakCooldown)        G.cloakCooldown        += pauseDuration;
+  if (G.purgeCooldown)        G.purgeCooldown        += pauseDuration;
+  if (G._corpKilledExpiry)    G._corpKilledExpiry    += pauseDuration;
+  if (G.activeMission?.workExpiry) G.activeMission.workExpiry += pauseDuration;
+  // Shift pending AV lic validUntil
+  G.pendingLics.forEach(l => { l.validUntil += pauseDuration; });
+  const overlay = document.getElementById('pause-overlay');
+  if (overlay) overlay.style.display = 'none';
+  const btn = document.getElementById('start-btn');
+  if (btn) btn.innerHTML = '⏸ GHOST';
+  AUD.navigate();
+}
+
+function togglePause() {
+  if (!G.running || G.gameOver) return;
+  if (G.paused) resumeGame(); else pauseGame();
+}
+
+// Spacebar to toggle pause
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && G.running && !G.gameOver) {
+    // Don't trigger if typing in an input
+    if (['INPUT','TEXTAREA'].includes(document.activeElement?.tagName)) return;
+    e.preventDefault();
+    togglePause();
+  }
+});
+
 // PASSIVE TRACKING — slow base rate, accelerated by silent virus
 setInterval(()=>{
   if(G.running&&!G.gameOver){
@@ -4000,7 +4069,7 @@ setInterval(()=>{
 setInterval(()=>{if(G.running&&Date.now()<G.purgeCooldown)updatePurgeUI();},1000);
 
 // License check every 5s + AV widget refresh
-setInterval(()=>{if(G.running&&!G.gameOver){checkLic();updateAVW();}},5000);
+setInterval(()=>{if(G.running&&!G.gameOver&&!G.paused){checkLic();updateAVW();}},5000);
 
 // Refresh AV window if open
 setInterval(()=>{if(G.running&&!G.gameOver&&openWins['antivirus'])renderAntivirus('antivirus');},12000);
@@ -4046,7 +4115,8 @@ function startTimer(){
   let lastSec = -1;
   const iv = setInterval(() => {
     if (G.gameOver) { clearInterval(iv); return; }
-    const realElapsed = (Date.now() - G.startMs) / 1000;
+    if (G.paused || G.gameOver) return;
+    const realElapsed = (Date.now() - G.startMs - G.pausedMs) / 1000;
     const igRem = Math.max(0, G.totalIGSec - realElapsed * 24);
     const igSecFloor = Math.floor(igRem);
     // Only update DOM when the displayed second actually changes
