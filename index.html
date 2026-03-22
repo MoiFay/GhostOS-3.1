@@ -399,7 +399,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
       <div class="db-grid">
         <div class="db-block yellow">
           <div class="db-block-title">📂 CONSTITUER UN DOSSIER</div>
-          <p>Collectez <span class="note">18 preuves sur 23</span> disponibles — emplacements <span class="note">aléatoires à chaque partie</span>.<br>
+          <p>Collectez <span class="note">15 preuves sur 23</span> disponibles — emplacements <span class="note">aléatoires à chaque partie</span>.<br>
           Preuves cachées dans : <span class="note">pages du darknet</span>, <span class="note">codes sources HTML</span> (Inspecter), <span class="note">fichiers à télécharger</span>.<br>
           Cliquez <span class="note">[ 🔒 SÉCURISER ]</span> pour extraire — un scan se lance automatiquement.<br>
           Soumettez via l'app <span class="note">📂 Dossier</span> une fois 18 preuves atteintes.</p>
@@ -606,7 +606,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
   <div class="ci" onclick="confirmRestart()">🔄 Redémarrer</div>
 </div>
 <div id="virus-pop">
-  <div class="win-hdr"><span class="win-title">⚠ VIRUS ACTIF — CHIFFREMENT</span><div class="win-ctrls"><div class="wbtn cl" onclick="dismissVirus()">✕</div></div></div>
+  <div class="win-hdr"><span class="win-title">⚠ VIRUS ACTIF — CHIFFREMENT</span><div class="win-ctrls"></div></div>
   <div class="vp"><span class="vp-ico">💀</span>
     <div class="vp-txt">PROCESSUS MALVEILLANT ACTIF<br>Chiffrement des fichiers en cours.<br>Scannez l'antivirus immédiatement !<br><span style="font-size:10px;color:#ff6666">Sans licence AV → DONNÉES PERDUES</span></div>
     <div class="vp-bc"><div class="vp-b" id="vp-b"></div></div>
@@ -667,7 +667,7 @@ const G = {
   coins:0, tracking:0, trackMult:1.0,
   software:{ vpn:false, traceblock:false, purgeTurbo:false, ghostCloak:false },
   cloakActive:false, cloakExpiry:0, cloakCooldown:0,
-  evidence:[], EVID_NEED:18,
+  evidence:[], EVID_NEED:15,
   fakeEvIds: new Set(),       // evIds that are fake this run
   verifiedEvIds: new Set(),   // evIds the player has verified as authentic
   verifierUses: 0,            // remaining uses of the Vérificateur tool
@@ -679,6 +679,7 @@ const G = {
   _lastClientName: '',
   _corpKilledExpiry: null,
   _renderNetMult: 1.0,
+  _clogTrapped: false,  // one-shot trap on c_log page
   paused: false,
   pausedMs: 0,       // total accumulated pause time
   _pauseStartMs: 0,  // timestamp when pause began
@@ -740,24 +741,35 @@ const EV = {
 
 // All page slots that can hold a collectable evidence item
 const PAGE_EV_SLOTS = [
+  // Corp internal
   'c_fin','c_log','c_mem','c_hr','c_sec','c_exec',
+  // Offshore
   'offshore','off_shell','off_acc',
+  // Market
   'market','mkt_drug','mkt_lab',
+  // Blackmail
   'blk','blk_jud',
+  // Shadow
   'shadow','sh_exec','sh_surv','sh_coup','sh_spy',
+  // Dark web
   'organ_market','human_traf','victims_db',
   'arms_heavy','arms_buyers',
+  // Intel & SPECTR3
   'intel','intel_mole','spectr3','sp3_adv','clients',
-  'f_leak','f_surv','f_mole_src',
+  // Forum threads
+  'f_leak','f_surv','f_mole_src','f_corp','f_sp3','f_mole',
+  // Hidden login pages
+  'hidden_accounts','hidden_orders','hidden_targets',
 ];
 
 // Page slots for inspector source clues
-const INSP_EV_SLOTS = ['corp','c_fin','c_hr','offshore','shadow','sh_exec','blk','spectr3','market','c_mem','c_exec','intel_mole'];
+const INSP_EV_SLOTS = ['corp','c_fin','c_hr','offshore','shadow','sh_exec','blk','spectr3','market','c_mem','c_exec','intel_mole','off_acc','blk_jud','sh_surv','sh_spy','f_leak','victims_db'];
 
 // Download file slots that can yield evidence
 const DL_EV_SLOTS = [
   'corp_report_q3.enc','agent_manifest.bin','logistics_0x4F.dat',
   'offshore_map.tar','shadow_comms.enc','argus_targets.csv',
+  'CORP_BACKUP_2049.tar','evidence_all.zip',
 ];
 
 function shuffle(arr) {
@@ -1086,7 +1098,7 @@ function activateLic(pin){
     trigGlitch(4);
     showNotif('☠️ PIÈGE ACTIVÉ', 'Ce code était falsifié par THE CORPORATION !', 'err');
     AUD.virusAlert();
-    setTimeout(() => trigVirus(), 500);
+    setTimeout(() => { if(!G.paused) trigVirus(); }, 500);
     return false;
   }
   const p=pin.toUpperCase().replace(/[^A-Z0-9\-]/g,'');
@@ -1676,6 +1688,11 @@ function nav(id){
   if(!openWins['browser']){openWin('browser');return;}
   if(G.hist[G.histIdx]!==id){G.hist=G.hist.slice(0,G.histIdx+1);G.hist.push(id);G.histIdx=G.hist.length-1;}
   renderPage(id);
+  // Auto-refresh inspector if open — shows source of the new page
+  if(openWins['inspector']){
+    if(!G.inspectedPages.has(id)){ G.inspectedPages.add(id); addT(0.74); }
+    renderInspector('inspector');
+  }
 }
 function navUrl(url){
   url=(url||'').trim().toLowerCase();
@@ -1839,7 +1856,7 @@ CX-889-OMEGA  | Panama Bancorp      | 320,000,000 €
 TOTAL DÉTOURNÉ                       | 847,300,000 €</pre>
 </div>${pageEvBtn('c_fin')}</div>`;}},
 
-c_log:{url:'c0rp-1nt3rn4l.onion/logistics',render(){addT(4.32);trigVirus();return `<div class="pt">🚢 LOGISTIQUE — MANIFESTES</div>
+c_log:{url:'c0rp-1nt3rn4l.onion/logistics',render(){addT(4.32);if(!G._clogTrapped){G._clogTrapped=true;setTimeout(trigVirus,800);}return `<div class="pt">🚢 LOGISTIQUE — MANIFESTES</div>
 <div class="pw">⚠ PAGE PIÉGÉE — Virus déclenché ! +3%</div>
 <div class="ps"><div class="ptx">EXPÉDITION 0x4F — CONFIDENTIEL<br>
 Contenu déclaré: "Matériel industriel"<br>
@@ -2528,11 +2545,34 @@ function trigVirus(){
   pop.classList.add('on');pop.style.left=(80+Math.random()*300)+'px';pop.style.top=(60+Math.random()*200)+'px';
   G.virusPct=0;
   G.virusIv=setInterval(()=>{
+    if(G.paused||G.gameOver)return; // pause support
     G.virusPct=Math.min(100,G.virusPct+1.5);
     const bar=document.getElementById('vp-b');const pct=document.getElementById('vp-pct');
     if(bar)bar.style.width=G.virusPct+'%';if(pct)pct.textContent=Math.round(G.virusPct);
-    addT(0.25);
-    if(G.virusPct>=100){clearInterval(G.virusIv);if(!G.licActive)trigBSOD();else showNotif('⚠ Virus toujours actif','Scannez l\'antivirus !','err');}
+    addT(0.2); // reduced from 0.25
+    if(G.virusPct>=100){
+      clearInterval(G.virusIv);
+      if(!G.licActive){
+        trigBSOD();
+      } else {
+        // Licence active — virus chiffre quand même des preuves avant d'être stoppé
+        dismissVirus();
+        trigGlitch(5);
+        AUD.virusAlert();
+        const destroyed = Math.min(G.evidence.length, 2 + Math.floor(Math.random()*2)); // 2-3 preuves détruites
+        const lost = [];
+        for(let i=0;i<destroyed&&G.evidence.length>0;i++){
+          const idx = Math.floor(Math.random()*G.evidence.length);
+          lost.push(G.evidence.splice(idx,1)[0]);
+        }
+        document.getElementById('evid-cnt').textContent = G.evidence.length;
+        if(lost.length>0){
+          showNotif('💀 PREUVES CHIFFRÉES !', `${lost.length} preuve(s) détruites : ${lost.map(e=>e.n).join(', ')}`, 'err');
+          if(openWins['dossier'])renderDossier('dossier');
+        }
+        showNotif('⚠ Virus non stoppé à temps','Scannez plus vite la prochaine fois !','err');
+      }
+    }
   },130);
   showNotif('🦠 VIRUS DÉTECTÉ !','Scannez l\'AV maintenant !','err');
   AUD.virusAlert();
@@ -2588,7 +2628,7 @@ function randEv(){
   if(G.gameOver)return;
   const r=Math.random();
   if(r<0.2)trigGlitch(3);
-  else if(r<0.35)trigVirus();
+  else if(r<0.35&&!G.paused)trigVirus();
   else if(r<0.45){showNotif('👁️ Surveillance','Activité suspecte détectée.','warn');addT(4.32);}
 }
 
@@ -3904,8 +3944,7 @@ Object.assign(EV, {
 });
 Object.assign(PAGES, HIDDEN_PAGES);
 
-// Add to PAGE_EV_SLOTS so they can be mapped
-PAGE_EV_SLOTS.push('hidden_accounts', 'hidden_orders', 'hidden_targets');
+// Hidden pages already in PAGE_EV_SLOTS above
 
 // Show login form for a page
 function showLoginModal(pageId) {
@@ -4075,7 +4114,7 @@ setInterval(()=>{if(G.running&&!G.gameOver&&!G.paused){checkLic();updateAVW();}}
 setInterval(()=>{if(G.running&&!G.gameOver&&openWins['antivirus'])renderAntivirus('antivirus');},12000);
 
 // Random virus every 100-180 real seconds
-function schedVirus(){setTimeout(()=>{if(G.running&&!G.gameOver&&!G.virusActive)trigVirus();if(!G.gameOver)schedVirus();},180000+Math.random()*60000);}
+function schedVirus(){setTimeout(()=>{if(G.running&&!G.gameOver&&!G.virusActive&&!G.paused)trigVirus();if(!G.gameOver)schedVirus();},180000+Math.random()*60000);}
 
 // ================================================================
 // GAME OVER / WIN
