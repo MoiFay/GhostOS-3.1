@@ -1601,7 +1601,7 @@ function downloadFile(fileId) {
         '✓ Données extraites. Traitement en cours...',
       ];
       if (res) { res.style.display='block'; res.className='dl-result ok'; res.innerHTML=genericResults[Math.floor(Math.random()*genericResults.length)]; }
-      addT(4.32);
+      addT(2.5);
       // No obvious notification — player discovers via 🐛 widget or tracking spike
     } else if (f.type === 'heavy_fake') {
       // Looks like it worked — but nothing inside
@@ -1856,7 +1856,7 @@ CX-889-OMEGA  | Panama Bancorp      | 320,000,000 €
 TOTAL DÉTOURNÉ                       | 847,300,000 €</pre>
 </div>${pageEvBtn('c_fin')}</div>`;}},
 
-c_log:{url:'c0rp-1nt3rn4l.onion/logistics',render(){addT(4.32);if(!G._clogTrapped){G._clogTrapped=true;setTimeout(trigVirus,800);}return `<div class="pt">🚢 LOGISTIQUE — MANIFESTES</div>
+c_log:{url:'c0rp-1nt3rn4l.onion/logistics',render(){addT(2.5);if(!G._clogTrapped){G._clogTrapped=true;setTimeout(trigVirus,800);}return `<div class="pt">🚢 LOGISTIQUE — MANIFESTES</div>
 <div class="pw">⚠ PAGE PIÉGÉE — Virus déclenché ! +3%</div>
 <div class="ps"><div class="ptx">EXPÉDITION 0x4F — CONFIDENTIEL<br>
 Contenu déclaré: "Matériel industriel"<br>
@@ -1883,7 +1883,7 @@ A-005 | DAGGER         | Chef Sécurité           | Chantage, intimidation</pre
 <br><span style="color:var(--r)">NOTE: MAMADOUSTAR et TWEKAAZ sont les cerveaux de THE CORPORATION.<br>Aucune opération ne se fait sans leur accord explicite.</span><br>
 Nœud proxy interne détecté : ${pNode('pn4','hr-node.0xC3.corp')}</div>${pageEvBtn('c_hr')}</div>`;}},
 
-c_sec:{url:'c0rp-1nt3rn4l.onion/security',render(){addT(4.32);return `<div class="pt">🔒 SÉCURITÉ INTERNE — SURVEILLANCE</div>
+c_sec:{url:'c0rp-1nt3rn4l.onion/security',render(){addT(2.5);return `<div class="pt">🔒 SÉCURITÉ INTERNE — SURVEILLANCE</div>
 <div class="pw">⚠ Module sensible — Traçage +3%</div>
 <div class="ps"><div class="ptx">PROGRAMME ARGUS — SURVEILLANCE CIVILE<br>
 Opérationnel depuis 2047. 847 cibles actives.<br>
@@ -1891,7 +1891,7 @@ Journalistes: 112 | Activistes: 203 | Politiciens: 89 | Autres: 443<br>
 Méthodes: Écoutes, accès aux comptes, suivi physique.<br>
 Coordinateur: EXEC-02</div>${pageEvBtn('c_sec')}</div>`;}},
 
-c_exec:{url:'c0rp-1nt3rn4l.onion/executive',render(){addT(5.76);randEv();return `<div class="pt">🚪 BUREAU EXÉCUTIF</div>
+c_exec:{url:'c0rp-1nt3rn4l.onion/executive',render(){addT(3.2);randEv();return `<div class="pt">🚪 BUREAU EXÉCUTIF</div>
 <div class="pw">⚠ ACCÈS TRÈS RESTREINT — Traçage +4%</div>
 <div class="ps"><div class="ptx">COMPTES PERSONNELS — DIRECTION THE CORPORATION<br><br>
 <pre style="font-size:10px;color:var(--td)">DIRIGEANT         | ALIAS        | COMPTE PERSONNEL  | SOLDE
@@ -1916,20 +1916,20 @@ Nœud proxy offshore: ${pNode('pn5','0ff-exit.0x9F.onion')}</div>${pageEvBtn('of
 ${dlBtn('offshore_map.tar')}
 ${dlBtn('security_patch.exe')}</div>`;}},
 
-off_shell:{url:'0ffsh0r3.onion/shell',render(){addT(4.32);return `<div class="pt">🏢 SOCIÉTÉS ÉCRANS — RÉSEAU</div>
+off_shell:{url:'0ffsh0r3.onion/shell',render(){addT(2.5);return `<div class="pt">🏢 SOCIÉTÉS ÉCRANS — RÉSEAU</div>
 <div class="ps"><div class="ptx">17 sociétés écrans actives (extrait) :<br>
 CORP-LUX-01 à CORP-LUX-07 (Luxembourg)<br>
 CORP-MAL-01 à CORP-MAL-05 (Malte)<br>
 CORP-CYP-01 à CORP-CYP-05 (Chypre)<br>
 Chacune recevant entre 20M€ et 150M€/an en fonds d'origine illicite</div>${pageEvBtn('off_shell')}</div>`;}},
 
-off_acc:{url:'0ffsh0r3.onion/accounts',render(){addT(5.02);return `<div class="pt">🔐 COMPTES OFFSHORE COMPLETS</div>
+off_acc:{url:'0ffsh0r3.onion/accounts',render(){addT(2.8);return `<div class="pt">🔐 COMPTES OFFSHORE COMPLETS</div>
 <div class="pw">⚠ Données ultra-sensibles — Traçage +3.5%</div>
 <div class="ps"><div class="ptx">Relevés complets de 847 comptes offshore liés à THE CORPORATION.<br>
 Banques: 23 établissements dans 11 pays.<br>
 Période couverte: 2041-2049. Nœud : ${pNode('pn13','acc-node.0x6B.off')} Total cumulé: 4.7Md€.</div>${pageEvBtn('off_acc')}</div>`;}},
 
-market:{url:'m4rk3t.onion',render(){addT(4.32);randEv();return `<div class="pt">⚔️ MARCHÉ SOUTERRAIN</div>
+market:{url:'m4rk3t.onion',render(){addT(2.5);randEv();return `<div class="pt">⚔️ MARCHÉ SOUTERRAIN</div>
 <div class="pw">⚠ ZONE HAUTEMENT SURVEILLÉE — Traçage +3%</div>
 <div class="ps"><div class="ptx">VENDEUR: CORP-ARMORY [VÉRIFIÉ ████ 100%]<br>
 Catalogue Q4-2049 : 340 armes (fusils, explosifs, armes légères)<br>
@@ -1941,7 +1941,7 @@ Validé par: <span style="color:var(--r)">EXEC-01</span><br>Nœud marché : ${pN
 ${dlBtn('logistics_0x4F.dat')}
 ${dlBtn('tor_updater.bin')}</div>`;}},
 
-mkt_drug:{url:'m4rk3t.onion/drugs',render(){addT(5.02);return `<div class="pt">🌐 RÉSEAU DISTRIBUTION — DROGUES</div>
+mkt_drug:{url:'m4rk3t.onion/drugs',render(){addT(2.8);return `<div class="pt">🌐 RÉSEAU DISTRIBUTION — DROGUES</div>
 <div class="ps"><div class="ptx">
 OPÉRATION VEINBLUE — Réseau Europe<br>
 Points de distribution actifs: 47 villes<br>
@@ -1949,7 +1949,7 @@ Tonnage annuel 2049: 12.4 tonnes toutes substances<br>
 Chiffre d'affaires: 340M€/an<br>
 Coordinateur: WRAITH (A-003)</div>${pageEvBtn('mkt_drug')}</div>`;}},
 
-mkt_lab:{url:'m4rk3t.onion/lab',render(){addT(5.76);return `<div class="pt">🧪 LABORATOIRE CLANDESTIN</div>
+mkt_lab:{url:'m4rk3t.onion/lab',render(){addT(3.2);return `<div class="pt">🧪 LABORATOIRE CLANDESTIN</div>
 <div class="pw">⚠ Données très sensibles — Traçage +4%</div>
 <div class="ps"><div class="ptx">
 Localisation: Belgique — Zone industrielle [coordonnées classifiées]<br>
@@ -1957,14 +1957,14 @@ Capacité: 800 kg/mois de classe A<br>
 Personnel: 23 chimistes — sous contrats falsifiés<br>
 Couverture: Laboratoire pharmaceutique "PHARMA-BC SA"</div>${pageEvBtn('mkt_lab')}</div>`;}},
 
-blk:{url:'bl4ckm41l.onion',render(){addT(4.32);return `<div class="pt">📁 ARCHIVE CHANTAGE — POLITIQUES</div>
+blk:{url:'bl4ckm41l.onion',render(){addT(2.5);return `<div class="pt">📁 ARCHIVE CHANTAGE — POLITIQUES</div>
 <div class="ps"><div class="ptx">DOSSIERS ACTIFS — PERSONNALITÉS POLITIQUES<br>
 3 ministres européens (photos + documents compromettants)<br>
 7 directeurs de banques (transactions illicites documentées)<br>
 Ces dossiers garantissent l'impunité depuis 2041<br>Nœud archive : ${pNode('pn8','blk-node.0xE1.vault')}</div>${pageEvBtn('blk')}</div>
 <div class="ps"><span class="pl" onclick="nav('blk_jud')">⚖️ Section judiciaire → bl4ckm41l.onion/judiciary</span></div>`;}},
 
-blk_jud:{url:'bl4ckm41l.onion/judiciary',render(){addT(5.02);return `<div class="pt">⚖️ CHANTAGE — JUDICIAIRE</div>
+blk_jud:{url:'bl4ckm41l.onion/judiciary',render(){addT(2.8);return `<div class="pt">⚖️ CHANTAGE — JUDICIAIRE</div>
 <div class="ps"><div class="ptx">DOSSIERS ACTIFS — MAGISTRATS<br>
 Procureur DELACOURT: Affaire sous pression depuis 09/2048<br>
 Procureur MARAIS: Instructions bloquées depuis 03/2049<br>
@@ -1994,7 +1994,7 @@ Signé: <span style="color:var(--r)">MAMADOUSTAR (fondateur) — TWEKAAZ (co-fon
 ${dlBtn('shadow_comms.enc')}
 ${dlBtn('security_patch.exe')}</div>`;}},
 
-sh_surv:{url:'sh4d0w.onion/surveillance',render(){addT(5.76);return `<div class="pt">👁️ PROGRAMME ARGUS — DÉTAILS</div>
+sh_surv:{url:'sh4d0w.onion/surveillance',render(){addT(3.2);return `<div class="pt">👁️ PROGRAMME ARGUS — DÉTAILS</div>
 <div class="ps"><div class="ptx">PROGRAMME ARGUS — RAPPORT COMPLET<br>
 847 cibles : journalistes, activistes, opposants<br>
 Méthodes actives: écoutes téléphoniques (non déclarées),<br>
@@ -2004,7 +2004,7 @@ Budget annuel: 47M€ — Financé par détournement des fonds CORP</div>${pageE
 ${dlBtn('argus_targets.csv')}
 ${dlBtn('tor_updater.bin')}</div>`;}},
 
-sh_coup:{url:'sh4d0w.onion/coup',render(){addT(8.64);randEv();return `<div class="pt">💥 PLAN DE DÉSTABILISATION</div>
+sh_coup:{url:'sh4d0w.onion/coup',render(){addT(4.5);randEv();return `<div class="pt">💥 PLAN DE DÉSTABILISATION</div>
 <div class="pw">⚠ DOCUMENT ULTRA-SECRET — Traçage +6%</div>
 <div class="ps"><div class="ptx">OPÉRATION FRACTURE — 2050<br>
 Pays ciblés: 2 gouvernements d'Europe de l'Est<br>
@@ -2033,7 +2033,7 @@ Pour les preuves les plus difficiles: shadow/coup, shadow/exec,<br>intel/mole, s
 ${can?`<button style="width:100%;margin-top:8px;padding:8px;background:rgba(0,255,65,.1);border:1px solid var(--g);color:var(--g);font-family:var(--font);font-size:11px;cursor:pointer;border-radius:2px;letter-spacing:2px;" onclick="openWin('dossier')">[ OUVRIR LE DOSSIER — SOUMETTRE ]</button>`:''}
 <span class="pl" onclick="nav('sp3_adv')" style="margin-top:10px">→ Accès avancé — sp3ctr3.onion/advanced</span></div>`;}},
 
-sp3_adv:{url:'sp3ctr3.onion/advanced',render(){addT(4.32);return `<div class="pt">📩 DEAD DROP AVANCÉ — SPECTR3</div>
+sp3_adv:{url:'sp3ctr3.onion/advanced',render(){addT(2.5);return `<div class="pt">📩 DEAD DROP AVANCÉ — SPECTR3</div>
 <div class="pw">⚠ Connexion très sensible — Traçage +3%</div>
 <div class="ps"><div class="ptx">Fichier classifié supplémentaire :<br>
 PROTOCOLE D'ACTIVATION — Codename: OMEGA<br>
@@ -2076,7 +2076,7 @@ Object.assign(PAGES, {
 
   // ---- ORGAN MARKET ----
   organ_market: { url:'0rg4n-m4rk3t.onion', render() {
-    addT(8.64); randEv();
+    addT(4.5);
     return `<div class="pt">🫀 0RG4N-M4RK3T — MARCHÉ D'ORGANES</div>
     <div class="pw">⚠ CONTENU EXTRÊMEMENT SENSIBLE — Traçage +6%</div>
     <div class="ps" style="border-color:rgba(255,0,0,.2)">
@@ -2120,7 +2120,7 @@ Object.assign(PAGES, {
 
   // ---- HUMAN TRAFFICKING ----
   human_traf: { url:'h-tr4d3.onion/listings', render() {
-    addT(10.08); randEv();
+    addT(5.5);
     return `<div class="pt">⛓️ H-TR4D3 — RÉSEAU DE TRAITE HUMAINE</div>
     <div class="pw">⚠ PAGE ULTRA SENSIBLE — Traçage +7% — DOCUMENT JURIDIQUE CRITIQUE</div>
     <div class="ps" style="border-color:rgba(255,0,0,.25)">
@@ -2189,7 +2189,7 @@ V-2047-03 | EMREE   | Rein droit prélevé (11/2047)
 
   // ---- ARMS CATALOG ----
   arms_heavy: { url:'4rm5-c4t4log.onion/heavy', render() {
-    addT(8.64); randEv();
+    addT(4.5);
     return `<div class="pt">🔫 4RM5-C4T4LOG — ARMEMENT LOURD</div>
     <div class="pw">⚠ ZONE TRÈS SURVEILLÉE — Traçage +6%</div>
     <div class="ps">
@@ -2629,7 +2629,7 @@ function randEv(){
   const r=Math.random();
   if(r<0.2)trigGlitch(3);
   else if(r<0.35&&!G.paused)trigVirus();
-  else if(r<0.45){showNotif('👁️ Surveillance','Activité suspecte détectée.','warn');addT(4.32);}
+  else if(r<0.45){showNotif('👁️ Surveillance','Activité suspecte détectée.','warn');addT(2.5);}
 }
 
 // ================================================================
@@ -3816,7 +3816,7 @@ function virusFakeUI() {
   fake.onclick = () => {
     // Trap! Increases tracking instead of reducing
     trigGlitch(3);
-    addT(12);
+    addT(4.0);
     AUD.virusAlert();
     showNotif('☠️ PIÈGE !', 'Faux bouton purge — +12% traçage !', 'err');
     fake.remove();
@@ -3899,7 +3899,7 @@ const LOGIN_CREDENTIALS = {
 // Hidden pages unlocked via login
 const HIDDEN_PAGES = {
   hidden_accounts: { url:'c0rp-s3cr3t.onion/accounts', render() {
-    addT(6);
+    addT(3.5);
     return `<div class="pt">🔐 COMPTES SECRETS — ACCÈS ADMIN</div>
     <div class="pw">⚠ Accès authentifié — Traçage +6%</div>
     <div class="ps"><div class="ptx" style="color:var(--r)">
@@ -3911,7 +3911,7 @@ const HIDDEN_PAGES = {
     </div>${pageEvBtn('hidden_accounts')}</div>`;
   }},
   hidden_orders: { url:'sh4d0w-exec.onion/orders', render() {
-    addT(8);
+    addT(4.5);
     return `<div class="pt">☠️ ORDRES DIRECTS — MAMADOUSTAR</div>
     <div class="pw">⚠ Zone ultra-secrète — Traçage +8%</div>
     <div class="ps"><div class="ptx">
@@ -3923,7 +3923,7 @@ const HIDDEN_PAGES = {
     </div>${pageEvBtn('hidden_orders')}</div>`;
   }},
   hidden_targets: { url:'argus.corp/targets', render() {
-    addT(7);
+    addT(4.0);
     return `<div class="pt">👁️ LISTE CIBLES — PROGRAMME ARGUS</div>
     <div class="pw">⚠ Accès authentifié — Traçage +7%</div>
     <div class="ps"><div class="ptx">
